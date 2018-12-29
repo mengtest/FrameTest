@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 9325791
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 75dba48ae3a12e998d6cab289efe4486
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 31d6cfe0d16ae931b73c59d7e0c089c0
+HashAppended: 0
+ClassTypes: []
+Assets:
+- Assets/main.unity
+Dependencies:
+- G:/GitHub/Chess/Assets/StreamingAssets/imgs.wood.unity3d
+- G:/GitHub/Chess/Assets/StreamingAssets/imgs.black.ju.unity3d
