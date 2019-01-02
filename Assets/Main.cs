@@ -63,17 +63,27 @@ public class Main : MonoBehaviour {
     void Start () {
         //InitChess();
         AssetLoaderManager.Instance.Initialize();
-        GameObject obj = AssetLoaderManager.Instance.LoadAsset<GameObject>("cube");
+        //异步 Test
+        AssetLoaderManager.Instance.LoadAssetAsync<GameObject>("cube", DownLoadComplete);
+
+        //同步 Test
+        //UnityEngine.Object obj = AssetLoaderManager.Instance.LoadAsset<GameObject>("cube");
+        //DownLoadComplete(obj, null);
+    }
+
+    void DownLoadComplete(UnityEngine.Object obj, object[] args)
+    {
         if (obj != null)
         {
-            GameObject.Instantiate(obj);
+            GameObject.Instantiate(obj as GameObject);
         }
     }
-	
+
 	// Update is called once per frame
 	void Update () {
-		
-	}
+        AssetLoaderManager.Instance.OnUpdate();
+
+    }
 
     string[] chessNames = new string[] { "jiang", "shi","xiang","ma",  "ju",  "pao","bing" };
     //public List<Chess> Chesses = new List<Chess>();

@@ -36,13 +36,13 @@ namespace Core.Res
 
         public void LoadAssetAsync<T>(string name, LoadAssetCallback callback) where T : Object
         {
-            UnityEngine.Object obj = LoadAsset<T>(name);
-            if (obj != null)
-            {
-                if (callback != null)
-                    callback(obj, new object[] { name });
-                return;
-            }
+            //UnityEngine.Object obj = LoadAsset<T>(name);
+            //if (obj != null)
+            //{
+            //    if (callback != null)
+            //        callback(obj, new object[] { name });
+            //    return;
+            //}
 
             if (asyncLoader == null)
             {

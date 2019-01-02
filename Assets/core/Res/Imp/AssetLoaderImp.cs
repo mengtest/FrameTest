@@ -5,28 +5,8 @@ using UnityEngine;
 
 namespace Core.Res
 {
-    public class AssetSyncLoaderImp : IAssetSyncLoader, ICacheOpt
+    public class AssetSyncLoaderImp : CacheOptImp, IAssetSyncLoader
     {
-
-        public void AddToCache(AssetBundle assetBundle)
-        {
-            AssetCache.Instance.AddToCache(assetBundle);
-        }
-
-        public void AddToCache(Object obj)
-        {
-            AssetCache.Instance.AddToCache(obj);
-        }
-
-        public Object GetAssetCache(string assetName)
-        {
-            return AssetCache.Instance.GetAssetCache(assetName);
-        }
-
-        public AssetBundle GetAssetBundleCache(string assetBundleName)
-        {
-            return AssetCache.Instance.GetAssetBundleCache(assetBundleName);
-        }
 
         public T LoadAsset<T>(string name) where T : Object
         {
@@ -42,8 +22,14 @@ namespace Core.Res
             {
                 string url = ResUtility.GetSyncAssetUrl(bundleName);
                 bundle = AssetBundle.LoadFromFile(url);
-                AddToCache(bundle);
+                //需要下载 bundle file
+                if (bundle == null)
+                {
+
+                }else
+                    AddToCache(bundle);
             }
+
             if (bundle != null)
             {
                 obj = bundle.LoadAsset(name);
