@@ -1,0 +1,128 @@
+# -*- coding: utf8 -*-'
+from Crypto.Cipher import AES
+import os,sys
+import md5,struct
+import zlib,shutil;
+import getpass
+import binascii
+from datetime import datetime;
+m = md5.new()
+BS = AES.block_size
+print(BS)
+pad =lambda s:(len(s)% BS == 0) and s or ( s +(BS - len(s)% BS)* chr(0))
+unpad =lambda s : s[0:-ord(s[-1])]
+def getKey(keyname):
+    key = None;
+    with open(keyname) as f:
+        key = f.read(32).decode("hex");
+        ck = f.read(32);
+        print(key,len(key));
+        #p = raw_input(u'Enter password: ')
+        p="hl123";
+        p = md5.new(p).digest();            
+        cipher = AES.new(p)
+        decrypted = cipher.decrypt(key)
+        ck2 = md5.new(decrypted).hexdigest();
+        if ck != ck2:
+            print(u"密码不对");
+            return ;
+        print(key,decrypted.encode("hex"));
+        key2="{";
+        for k in decrypted:
+            key2 = key2 + hex(ord(k)^0x11) +",";
+        key2 = key2[:-1];    
+        key2  = key2 + '}';    
+        print(key2);    
+        return decrypted; 
+def md5file(fn):
+    f = open(fn,"rb");
+    m = md5.new();
+    data = f.read();
+    m.update(data);
+    f.close();
+    return m.hexdigest(),len(data);
+def encodeDll(pf,src,dest,releasefn):
+    releasedir = releasefn[:releasefn.rfind("/")];
+    if not os.path.exists(releasedir):
+        os.makedirs(releasedir);
+    keyname = sys.path[0]+"/key.txt";
+    key = getKey(keyname);      
+    if key != None:     
+        print("key:",key.encode("hex"));
+         
+        
+        
+        with open(src,"rb") as f:
+            
+            text = f.read();
+             
+            iv = b'\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f';
+            crc = binascii.crc32(pad(text))&  0xffffffff
+            key2 = bytearray(key);
+            print("key type:",type(key),type(key2),key2);
+            for i in range(len(key2)):
+                
+                key2[i] = ((key2[i])^0x11^(((crc>>(((i)/4)*8))&0xff)>>(((i)%4))));
+                print("key:",i,hex((crc>>(((i)/4)*8))&0xff),i%4,hex(key2[i]));
+            print("real key:",key2,str(key2).encode("hex"),text[1:3].encode("hex"));
+            cipher = AES.new(str(key2))
+            sz = len(text);
+            
+            
+            
+            print("crc:",hex(crc),crc,len(text) );
+    tmstr = datetime.today().strftime("%Y%m%d%H%M%S");        
+    with open(dest,"wb") as f2:
+        pos = 0;
+        smallBlock = 256;
+        largeBlock = smallBlock*20;
+        while sz - pos>smallBlock:
+            f2.write(cipher.encrypt(text[pos:pos+smallBlock]));
+            f2.write(text[pos+smallBlock:pos+largeBlock]);
+            pos += largeBlock;
+         
+        f2.write(struct.pack('>I',crc));  
+        f2.write(tmstr);  
+    
+    with open(dest,"rb") as f2:
+        data  = f2.read();
+        data = zlib.compress(data)
+        m = md5.new();        
+        m.update(data);
+        md5str = m.hexdigest();
+        with open(releasefn,"wb") as f3:
+            f3.write(data);
+    curMinApp="";        
+    if os.path.exists( pf+"/release/app_temp/app.info"):
+        with open(pf+"/release/app_temp/app.info") as f:
+            strs = f.read().split(",");
+            if len(strs)>2:
+                curMinApp = strs[2];
+    with open("temp/assets/app.info","w") as f:
+        f.write(md5str+","+tmstr+","+curMinApp);        
+    #shutil.copyfile(dest,releasefn);
+    shutil.copyfile("temp/assets/app.info",pf+"/release/app_temp/app.info");
+    #print(len(pad(text)),len(text))  # will be something like 'f456a6b0e54e35f2711a9fa078a76d16'        
+def encodeDll2(pf,src,dest,releasefn):
+    tmstr = datetime.today().strftime("%Y%m%d%H%M%S");        
+    curMinApp="";        
+    if os.path.exists( pf+"/release/app_temp/app.info"):
+        with open(pf+"/release/app_temp/app.info") as f:
+            strs = f.read().split(",");
+            if len(strs)>2:
+                curMinApp = strs[2];
+    with open("temp/assets/app.info","w") as f:
+        f.write("md5str"+","+tmstr+","+curMinApp);     
+    #shutil.copyfile("temp/assets/app.info",pf+"/release/app_temp/app.info");
+    #shutil.copyfile("temp/assets/app.info",pf+"/release/app/app.info");   
+def testDll(fn):
+    newfn = fn.split(".")[0]+"_new.dll";
+    with open(fn,"rb") as f2:
+        data = f2.read();
+        with open(newfn,"wb") as f:
+            f.write(zlib.decompress(data));
+if __name__ == "__main__":
+    #encodeDll(sys.argv[1],sys.argv[2]);    
+    testDll(sys.argv[1]);
+#decrypted = cipher.decrypt(encrypted)
+#print(decrypted.decode())  # will be 'to be encrypted'

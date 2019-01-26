@@ -1,0 +1,8 @@
+modeldir=/Users/cj/Workspace/cardres_ios/AssetBundles/
+uidir=/Users/cj/Workspace/cardapp_ios/main/AssetBundles/
+luadir=/Users/cj/Workspace/cardapp_ios/main/Assets/lua/
+sounddir=/Users/cj/Workspace/cardapp_ios/main/Assets/UI/sound/
+luaConvertDir=LuaEncoder/luajit-2.1/
+name=client
+password=client123
+STREAM_RESOURCE_TARGET_DIR=/Users/cj/Workspace/cardapp_ios/main/Assets/StreamingAssets/

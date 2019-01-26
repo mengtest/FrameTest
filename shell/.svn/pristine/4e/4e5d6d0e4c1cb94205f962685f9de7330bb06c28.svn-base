@@ -1,0 +1,1 @@
+python copyres_iOS.py iOS

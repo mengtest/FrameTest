@@ -1,0 +1,181 @@
+# -*- coding: utf8 -*-'
+import os,md5,shutil;
+import zlib,sys,pysvn;
+import platform;
+
+
+def md5str(val):
+    m = md5.new();
+    m.update(val);  
+    return m.hexdigest();
+
+
+def copyDir(srcdir,destdir):
+    
+    for root, dirs, files in os.walk(srcdir):
+        for f in files:
+            if f.find(".manifest")>0 or f.find(".meta")>0:
+                continue;
+            fn = os.path.join(root,f);
+            destd = destdir+root[len(srcdir):];
+            if not os.path.exists(destd):
+                os.makedirs(destd);
+            destf = destdir+fn[len(srcdir):];
+            shutil.copy(fn,destf);
+            print "copy ",fn," to ",destf;
+            
+def copyModelAsset(subdir,destsubdir,assetModelDir):
+    uiAssetDir = "../"+subdir+"/orig/res/res/";
+    releaseDir="../"+subdir+"/release/res/";
+    destdir = assetModelDir;
+    '''
+    restypefile = "../"+subdir+"/restype.txt";
+    tpf = open(restypefile);
+    filetps={};
+    print "open file: " + restypefile;
+    for l in tpf.readlines():
+        s = l.strip().split("\t");
+        if len(s) != 2:
+            continue;
+        filetps[s[0].strip().replace("\\","/")]=s[1].strip();
+        print s[0].strip().replace("\\","/");
+    '''
+    for root, dirs, files in os.walk(uiAssetDir):
+        for f in files:
+            if f.find(".manifest")>0 or f.find(".meta")>0:
+                continue;
+            fn = os.path.join(root,f);
+           
+            k = "res/"+fn[len(uiAssetDir):];
+            k = k.replace("\\","/");
+            '''
+            if not( k in filetps):
+                print "file not in restype:",k;
+                continue;
+            if filetps[k] != "1":
+                print "ignore file:",k;
+                continue;
+
+            if k.find("dg_fuben_05_2.unity3d")>=0:
+                print k;
+            '''
+            md5k = md5str(k);
+            fn=releaseDir+md5k[0]+"/"+md5k;
+
+            destd =  destdir+md5k[0];
+            if not os.path.exists(destd):
+                os.makedirs(destd);
+            
+            destf = destd+"/"+md5k;
+            print "file ", k, "copy ",fn,"to",destf;
+            shutil.copy(fn,destf);
+    shutil.copy(releaseDir+"ver_res.dat",destdir+"ver_res.dat");
+    shutil.copy(releaseDir+"ver_res.info",destdir+"ver_res.info");
+def copyuiAsset(subdir,destsubdir,assetDir):
+    uiAssetDir = "../"+subdir+"/orig/data/";
+    releaseDir="../"+subdir+"/release/data/";
+    destdir = assetDir;
+    
+    for root, dirs, files in os.walk(uiAssetDir):
+        for f in files:
+            if f.find(".manifest")>0 or f.find(".meta")>0:
+                continue;
+            fn = os.path.join(root,f);
+           
+            k = fn[len(uiAssetDir):];
+            k = k.replace("\\","/");
+            #if k.startswith("data/") and k != "data/data.db":
+                #print "ignore db file:",k;
+            #    continue;
+            if k.startswith("data/"):
+                if k != "data/data.db" and k != "data/essword.dat":
+                    continue;
+                    
+            md5k = md5str(k);
+            fn=releaseDir+md5k[0]+"/"+md5k;
+
+            destd =  destdir+md5k[0];
+            if not os.path.exists(destd):
+                os.makedirs(destd);
+            
+            destf = destd+"/"+md5k;
+            print "file:",os.path.join(root,f)," copy ",fn,"to",destf;
+            fdest = open(destf,"wb");
+            fsrc = open(fn,"rb");
+            if k.startswith("lua/"):
+                fdest.write(zlib.decompress(fsrc.read()));
+            else:
+                fdest.write(fsrc.read());
+            #fdest.write(fsrc.read());    
+            fdest.close;
+            fsrc.close();
+             
+    shutil.copy(releaseDir+"ver_data.dat",destdir+"ver_data.dat");
+    shutil.copy(releaseDir+"ver_data.info",destdir+"ver_data.info");
+
+def copydbAsset(subdir,destsubdir,assetDir):
+    uiAssetDir = "../"+subdir+"/orig/db/";
+    releaseDir="../"+subdir+"/release/db/";
+    destdir = assetDir;
+    
+    for root, dirs, files in os.walk(uiAssetDir):
+        for f in files:
+            if f.find(".manifest")>0 or f.find(".meta")>0:
+                continue;
+            fn = os.path.join(root,f);
+           
+            k = fn[len(uiAssetDir):];
+            k = k.replace("\\","/");
+            #if k.startswith("data/") and k != "data/data.db":
+                #print "ignore db file:",k;
+            #    continue;
+            #if k.startswith("data/"):
+            #    if k != "data/data.db" and k != "data/essword.dat":
+            #        continue;
+                    
+            md5k = md5str(k);
+            fn=releaseDir+md5k[0]+"/"+md5k;
+
+            destd =  destdir+md5k[0];
+            if not os.path.exists(destd):
+                os.makedirs(destd);
+            
+            destf = destd+"/"+md5k;
+            print "file:",os.path.join(root,f)," copy ",fn,"to",destf;
+            fdest = open(destf,"wb");
+            fsrc = open(fn,"rb");
+            if k.startswith("lua/"):
+                fdest.write(zlib.decompress(fsrc.read()));
+            else:
+                fdest.write(fsrc.read());
+                
+            fdest.close;
+            fsrc.close();
+             
+    shutil.copy(releaseDir+"ver_db.dat",destdir+"ver_db.dat");
+    shutil.copy(releaseDir+"ver_db.info",destdir+"ver_db.info");	
+def get_login(*args, **kwargs):
+    return (True,"cj","cj123",False);           
+
+def removeStreamingFiles(assetDir):
+    if os.path.exists(assetDir):
+        shutil.rmtree(assetDir);
+    
+pf="android";
+if len(sys.argv)>1:
+    pf=sys.argv[1];
+client = pysvn.Client();
+client.callback_get_login = get_login;
+client.update("../"+pf); 
+cfgf = open(pf+".conf");
+cfg = {};
+for l in cfgf.readlines():
+    strs = l.strip().split("=");
+    if len(strs) == 2:
+        cfg[strs[0]] = strs[1];
+        
+removeStreamingFiles(cfg["STREAM_RESOURCE_TARGET_DIR"]);
+copyModelAsset(pf,pf,cfg["STREAM_RESOURCE_TARGET_DIR"]);
+copyuiAsset(pf,pf,cfg["STREAM_RESOURCE_TARGET_DIR"]);
+copydbAsset(pf,pf,cfg["STREAM_RESOURCE_TARGET_DIR"]);
+

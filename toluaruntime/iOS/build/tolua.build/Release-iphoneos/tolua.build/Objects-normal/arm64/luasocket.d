@@ -1,0 +1,16 @@
+dependencies: /Users/hlmac/Workspace/toluaruntime/luasocket/luasocket.c \
+  ../luajit-2.1/src/lua.h ../luajit-2.1/src/luaconf.h \
+  ../luajit-2.1/src/lauxlib.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/compat.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/luasocket.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/auxiliar.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/except.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/timeout.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/buffer.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/io.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/inet.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/socket.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/usocket.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/tcp.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/udp.h \
+  /Users/hlmac/Workspace/toluaruntime/luasocket/select.h

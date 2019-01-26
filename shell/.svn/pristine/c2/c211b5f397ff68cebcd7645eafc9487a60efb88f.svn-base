@@ -1,0 +1,5 @@
+modeldir=E:\swcard\cardres_pc\AssetBundles\
+uidir=E:\swcard\app_pc\main\AssetBundles\
+luadir=E:\swcard\app_pc\main\Assets\lua\
+sounddir=g:\workspace\unity\xljapp\main\Assets\UI\sound\
+luaConvertDir=LuaEncoder\luajit\

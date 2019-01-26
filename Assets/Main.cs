@@ -1,4 +1,5 @@
-﻿using Core.Res;
+﻿using Common;
+using Core.Res;
 using UnityEngine;
 
 public class ChessManager
@@ -62,13 +63,25 @@ public class Main : MonoBehaviour {
     // Use this for initialization
     void Start () {
         //InitChess();
-        AssetLoaderManager.Instance.Initialize();
-        //异步 Test
-        AssetLoaderManager.Instance.LoadAssetAsync<GameObject>("cube", DownLoadComplete);
+        //AssetLoaderManager.Instance.Initialize();
+        ////异步 Test
+        //AssetLoaderManager.Instance.LoadAssetAsync<GameObject>("cube", DownLoadComplete);
 
         //同步 Test
         //UnityEngine.Object obj = AssetLoaderManager.Instance.LoadAsset<GameObject>("cube");
         //DownLoadComplete(obj, null);
+
+        socket = new GameSocket2();
+        socket.Connect("127.0.0.1", 13000);
+       
+    }
+
+
+    GameSocket2 socket;
+    private void OnApplicationQuit()
+    {
+        socket.DisConnect();
+        socket.Close();
     }
 
     void DownLoadComplete(UnityEngine.Object obj, object[] args)
@@ -79,10 +92,19 @@ public class Main : MonoBehaviour {
         }
     }
 
+    float pretime = 0;
 	// Update is called once per frame
 	void Update () {
         AssetLoaderManager.Instance.OnUpdate();
 
+        if (socket != null)
+        {
+            if (Time.time - pretime > 3)
+            {
+                pretime = Time.time;
+                socket.Send("Msg:"+ System.DateTime.Now.ToShortTimeString());
+            }
+        }
     }
 
     string[] chessNames = new string[] { "jiang", "shi","xiang","ma",  "ju",  "pao","bing" };

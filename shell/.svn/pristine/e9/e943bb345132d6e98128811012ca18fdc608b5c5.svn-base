@@ -1,0 +1,11 @@
+ui/ui
+res/res
+ui/shader/shaders.unity3d
+ui/prefab/uiroot.unity3d
+data2/data.pdb
+#ui/prefab/versioncheck.unity3d
+atlas/common.unity3d
+atlas/common2.unity3d
+font/ttf/xintongyongziti.unity3d
+texture/common/loadingtiao.unity3d
+res/shader/sceneshaders.unity3d

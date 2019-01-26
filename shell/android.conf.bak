@@ -1,0 +1,8 @@
+modeldir=E:\swcard\cardres_android\AssetBundles\
+uidir=E:\swcard\app_android\main\AssetBundles\
+luadir=E:\swcard\app_android\main\Assets\lua\
+sounddir=g:\workspace\unity\xljapp\main\Assets\UI\sound\
+luaConvertDir=LuaEncoder\luajit\
+name=deploy124
+password=deploy123
+STREAM_RESOURCE_TARGET_DIR=E:\swcard\app_android\main\Assets\StreamingAssets\
